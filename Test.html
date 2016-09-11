@@ -5,6 +5,7 @@
 		<script src="required/jquery.js"></script>
 		<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 		<script src="required/turf.min.js"></script>
+		<script src="turf-ContourLines.js"></script>
 		<style>
 			#map{
 				height: 100%;
@@ -40,54 +41,10 @@
 
 			var tinLayer=L.geoJson().addTo(map);
 
-			calculateTIN();
+			tinLayer.addData(calculateTIN());
 
-			function calculateTIN() {
-				// generate some random point data
-				var vertices = turf.random('points', 30, {
-					bbox: [-10, 20, 10, 40]
-				});
-				//var vertices=turf.featureCollection(points);
-				//console.log(JSON.stringify(vertices));
-				//=points
-				// add a random property to each point between 0 and 9
-				for (var i = 0; i < vertices.features.length; i++) {
-					vertices.features[i].properties.z = ~~(Math.random() * 9);
-				}
+			//console.log(getCoordsForZ(3,[-5.8102816343307495, 35.78536490552738],[-5.808691084384917, 35.785190837866296],10,0));
 
-				var min=vertices.features[0];
-				for(var i = 1; i < vertices.features.length; i++){
-					min=(min.properties.z<vertices.features[i].properties.z)?min:vertices.features[i];
-				}
-				//console.log("lowest point "+JSON.stringify(min));
-
-				var max=vertices.features[0];
-				for(var i = 1; i < vertices.features.length; i++){
-					max=(max.properties.z>vertices.features[i].properties.z)?max:vertices.features[i];
-				}
-				//console.log("highest point "+JSON.stringify(max));
-
-				var tin = turf.tin(vertices, 'z');
-				
-				var z=min.properties.z;
-				var verticesContourLines={};
-				while(z<=max.properties.z){
-					var sameLevelPoints=[];
-					for( var i =0; i < vertices.features.length; i++){
-						if(z==vertices.features[i].properties.z){
-							sameLevelPoints.push(vertices.features[i]);
-						}
-					}
-					verticesContourLines[z]=sameLevelPoints;
-					//console.log(JSON.stringify(sameLevelPoints));
-					z+=2;
-				}
-
-				//=tin
-				tinLayer.addData(tin);
-				//console.log(JSON.stringify(verticesContourLines));
-				console.log(JSON.stringify(tin));
-			}
 		</script>
 	</body>
 </html>
