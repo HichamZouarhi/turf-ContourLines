@@ -40,9 +40,14 @@
 			});*/
 
 			var tinLayer=L.geoJson().addTo(map);
-
-			tinLayer.addData(calculateTIN());
-
+			var contourLinesLayer=L.geoJson().addTo(map);
+			var elevationData=calculateTIN();
+			var contourLines=generateContourLines(elevationData[0], elevationData[1], elevationData[2]);
+			//tinLayer.addData(tin);
+			for( var line in contourLines){
+				console.log(JSON.stringify(contourLines[line]));
+				contourLinesLayer.addData(contourLines[line]);
+			}
 			//console.log(getCoordsForZ(3,[-5.8102816343307495, 35.78536490552738],[-5.808691084384917, 35.785190837866296],10,0));
 
 		</script>

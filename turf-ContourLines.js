@@ -25,8 +25,18 @@ function calculateTIN() {
 
 	var tin = turf.tin(vertices, 'z');
 			
+	
+
+	//=tin
+	//console.log(JSON.stringify(contourLines));
+	//console.log(JSON.stringify(tin));
+	return [tin, min, max];
+}
+
+function generateContourLines(tin, min, max){
 	var z=min.properties.z;
 	var verticesContourLines={};
+	var contourLines={};
 	while(z<=max.properties.z){
 		var sameLevelPoints=[];
 		for( var i =0; i < tin.features.length; i++){
@@ -47,13 +57,15 @@ function calculateTIN() {
 		}
 		verticesContourLines[z]=sameLevelPoints;
 		//console.log(JSON.stringify(sameLevelPoints));
+		var coordContourLines=[];
+		for(var i=0; i<sameLevelPoints.length ; i++){
+			coordContourLines.push(sameLevelPoints[i].geometry.coordinates);
+		}
+		contourLines[z]=turf.lineString(coordContourLines, {"z" : z});
 		z+=2;
 	}
 
-	//=tin
-	console.log(JSON.stringify(verticesContourLines));
-	//console.log(JSON.stringify(tin));
-	return tin;
+	return contourLines;
 }
 
 function getCoordsForZ(z, vertex1, vertex2, zmin, zmax){
