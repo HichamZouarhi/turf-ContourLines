@@ -5,6 +5,7 @@
 		<script src="required/jquery.js"></script>
 		<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 		<script src="required/turf.min.js"></script>
+		<script src="required/underscore.js"></script>
 		<script src="turf-ContourLines.js"></script>
 		<style>
 			#map{
@@ -25,29 +26,38 @@
 			}).addTo(map);
 			
 			var ptsLayer = new L.geoJson();
-			ptsLayer.addTo(map);
+			//ptsLayer.addTo(map);
 			var points=[];
-
 			// load GeoJSON from an external file
-			/*$.getJSON("data/points.geojson",function(data){
+			$.getJSON("data/points.geojson",function(data){
 				// add GeoJSON layer to the map once the file is loaded
 				ptsLayer = L.geoJson(data,{
 					onEachFeature: function( feature, layer ){
-						points.push(turf.point(feature.geometry.coordinates, {z: '5'}));
-						console.log(JSON.stringify(turf.point(feature.geometry.coordinates)));
+						layer.bindPopup("Height : "+feature.properties.z);
+						//points.push(turf.point(feature.geometry.coordinates, {'z': feature.properties.z}));
+						points.push(feature);
+						//console.log(JSON.stringify(turf.point(feature.geometry.coordinates, {'z': feature.properties.z})));
+						//console.log(JSON.stringify(points[points.length-1]));
 					}
 				}).addTo(map);
-			});*/
-
-			var tinLayer=L.geoJson().addTo(map);
-			var contourLinesLayer=L.geoJson().addTo(map);
-			var elevationData=calculateTIN();
-			var contourLines=generateContourLines(elevationData[0], elevationData[1], elevationData[2]);
-			//tinLayer.addData(tin);
-			for( var line in contourLines){
-				console.log(JSON.stringify(contourLines[line]));
-				contourLinesLayer.addData(contourLines[line]);
-			}
+				//console.log(points.length);
+				var vertices=turf.featureCollection(points);
+				//var tinLayer=L.geoJson().addTo(map);
+				var contourLinesLayer=L.geoJson().addTo(map);
+			
+				var elevationData=calculateTIN(vertices);
+				//tinLayer.addData(elevationData[0]);
+				var contourLines=generateContourLines(elevationData[0], elevationData[1], elevationData[2]);
+			
+				for( var line in contourLines){
+					//console.log(JSON.stringify(contourLines[line]));
+					contourLinesLayer.addData(contourLines[line]);
+				}
+			});
+			
+			
+			
+			
 			//console.log(getCoordsForZ(3,[-5.8102816343307495, 35.78536490552738],[-5.808691084384917, 35.785190837866296],10,0));
 
 		</script>
