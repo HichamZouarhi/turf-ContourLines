@@ -61,9 +61,10 @@ function generateContourLines(tin, min, max){
 		//console.log("Height : "+z+" number of points  "+uniqueVertices.length);
 		var coordContourLines=[];
 		for(var i=0; i<uniqueVertices.length ; i++){
-			coordContourLines.push(uniqueVertices[i].geometry.coordinates);
+			coordContourLines.push(turf.point(uniqueVertices[i].geometry.coordinates));
 		}
-		contourLines[z]=turf.lineString(coordContourLines, {"z" : z});
+		contourLines[z]=turf.convex(turf.featureCollection(coordContourLines));
+		console.log(contourLines[z]);
 		z+=2;
 	}
 

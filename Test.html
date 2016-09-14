@@ -50,7 +50,7 @@
 				var contourLines=generateContourLines(elevationData[0], elevationData[1], elevationData[2]);
 			
 				for( var line in contourLines){
-					//console.log(JSON.stringify(contourLines[line]));
+					console.log(JSON.stringify(contourLines[line]));
 					contourLinesLayer.addData(contourLines[line]);
 				}
 			});
